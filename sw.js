@@ -1,15 +1,11 @@
 const CACHE_NAME = 'koltuk-tasarim-cache-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/main.js',
-  '/three-visualizer.js',
-  '/canvas-2d.js',
-  '/manifest.json',
-  '/icons/icon-192.jpg',
-  '/icons/icon-512.jpg',
-  '/logo.png'
+  './',
+  'index.html',
+  'manifest.json',
+  'icons/icon-192.jpg',
+  'icons/icon-512.jpg',
+  'logo.png'
 ];
 
 // Install Service Worker and cache core files
