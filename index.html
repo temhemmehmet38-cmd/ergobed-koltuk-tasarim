@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parametrik Koltuk Tasarımı ve Oda Yerleşim Planlayıcısı</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon & PWA -->
+    <link rel="manifest" href="/ergobed-koltuk-tasarim/assets/manifest-B9qzVpz5.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    
+  <script type="module" crossorigin src="/ergobed-koltuk-tasarim/assets/index-CLXEMZjM.js"></script>
+  <link rel="stylesheet" crossorigin href="/ergobed-koltuk-tasarim/assets/index-D7aR-JMz.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Main Application Layout -->
+        <header class="app-header no-print">
+            <div class="logo">
+                <img src="/ergobed-koltuk-tasarim/assets/logo-D0Mz8cF8.png" alt="Ergobed Logo" class="app-logo">
+                <div class="logo-text">
+                    <h1>KoltukTasarım</h1>
+                    <span>Oda Yerleşim & 3D Tasarım</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="btn-new" class="btn btn-secondary">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                    Yeni Tasarım
+                </button>
+                <div class="dropdown">
+                    <button id="btn-designs" class="btn btn-secondary dropdown-toggle">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        Kayıtlı Tasarımlar
+                    </button>
+                    <div id="designs-menu" class="dropdown-menu">
+                        <!-- Loaded dynamically -->
+                        <span class="dropdown-empty">Kayıtlı tasarım bulunamadı</span>
+                    </div>
+                </div>
+                <button id="btn-print" class="btn btn-primary">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-6a2 2 0 012-2h16a2 2 0 012 2v6a2 2 0 01-2 2h-2m-12 0v5h12v-5m-12 0h12"/></svg>
+                    Teklif & PDF Al
+                </button>
+            </div>
+        </header>
+
+        <div class="app-body">
+            <!-- Sidebar Controls -->
+            <aside class="sidebar no-print">
+                <!-- Navigation Tabs inside Sidebar -->
+                <div class="sidebar-tabs">
+                    <button class="tab-btn active" data-tab="tab-room">Oda Ölçüleri</button>
+                    <button class="tab-btn" data-tab="tab-sofa">Koltuk Ölçüleri</button>
+                    <button class="tab-btn" data-tab="tab-material">Malzeme & Detay</button>
+                </div>
+
+                <div class="sidebar-content">
+                    <!-- TAB 1: ROOM SETTINGS -->
+                    <div id="tab-room" class="tab-panel active">
+                        <section class="section">
+                            <h2>Duvar Ölçüleri (Müşteri Evi)</h2>
+                            <p class="section-desc">Koltuk yerleşimini görmek için odanın duvar ölçülerini girin.</p>
+                            
+                            <div class="control-group">
+                                <label for="input-wall-a">
+                                    <span>Duvar A Uzunluğu (Koltuk Arkası)</span>
+                                    <span class="value-display"><span id="val-wall-a">400</span> cm</span>
+                                </label>
+                                <input type="range" id="input-wall-a" min="150" max="800" step="5" value="400">
+                                <input type="number" id="num-wall-a" min="150" max="800" value="400" class="input-number">
+                            </div>
+
+                            <div class="control-group">
+                                <label for="input-wall-b">
+                                    <span>Duvar B Uzunluğu (Yan Duvar)</span>
+                                    <span class="value-display"><span id="val-wall-b">300</span> cm</span>
+                                </label>
+                                <input type="range" id="input-wall-b" min="150" max="800" step="5" value="300">
+                                <input type="number" id="num-wall-b" min="150" max="800" value="300" class="input-number">
+                            </div>
+                        </section>
+
+                        <section class="section">
+                            <h2>Müşteri Bilgileri</h2>
+                            <p class="section-desc">Teklif formunda görünecek müşteri bilgileri.</p>
+                            <div class="form-group">
+                                <label for="customer-name">Müşteri Adı Soyadı</label>
+                                <input type="text" id="customer-name" placeholder="Örn: Ahmet Yılmaz">
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-phone">Telefon Numarası</label>
+                                <input type="text" id="customer-phone" placeholder="Örn: 0555 123 45 67">
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-notes">Özel Notlar (Teklifte Görünür)</label>
+                                <textarea id="customer-notes" placeholder="Örn: Sol uzanmalı L köşe koltuk, krem kadife kumaş, ahşap ayaklı."></textarea>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- TAB 2: SOFA DIMENSIONS -->
+                    <div id="tab-sofa" class="tab-panel">
+                        <section class="section">
+                            <h2>Koltuk Tipi</h2>
+                            <div class="type-selector">
+                                <label class="type-option">
+                                    <input type="radio" name="sofa-type" value="straight" checked>
+                                    <div class="option-card">
+                                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M3 14h18M6 8v6M18 8v6"/></svg>
+                                        <span>Düz</span>
+                                    </div>
+                                </label>
+                                <label class="type-option">
+                                    <input type="radio" name="sofa-type" value="l-shape">
+                                    <div class="option-card">
+                                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h4v12h12v4H4z"/></svg>
+                                        <span>L Köşe</span>
+                                    </div>
+                                </label>
+                                <label class="type-option">
+                                    <input type="radio" name="sofa-type" value="u-shape">
+                                    <div class="option-card">
+                                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h4v12h8V4h4v16H4z"/></svg>
+                                        <span>U Köşe</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="section">
+                            <h2>Koltuk Ölçüleri (cm)</h2>
+                            
+                            <div class="control-group">
+                                <label for="input-sofa-width">
+                                    <span>Toplam Genişlik (X)</span>
+                                    <span class="value-display"><span id="val-sofa-width">240</span> cm</span>
+                                </label>
+                                <input type="range" id="input-sofa-width" min="120" max="500" step="5" value="240">
+                                <input type="number" id="num-sofa-width" min="120" max="500" value="240" class="input-number">
+                            </div>
+
+                            <div class="control-group">
+                                <label for="input-sofa-depth">
+                                    <span>Koltuk Derinliği (Y)</span>
+                                    <span class="value-display"><span id="val-sofa-depth">90</span> cm</span>
+                                </label>
+                                <input type="range" id="input-sofa-depth" min="70" max="150" step="5" value="90">
+                                <input type="number" id="num-sofa-depth" min="70" max="150" value="90" class="input-number">
+                            </div>
+
+                            <!-- L-Chaise / U-Chaise specific depth inputs -->
+                            <div class="control-group l-only" style="display: none;">
+                                <label for="input-chaise-depth">
+                                    <span>Uzanma Köşesi Uzunluğu</span>
+                                    <span class="value-display"><span id="val-chaise-depth">160</span> cm</span>
+                                </label>
+                                <input type="range" id="input-chaise-depth" min="120" max="220" step="5" value="160">
+                                <input type="number" id="num-chaise-depth" min="120" max="220" value="160" class="input-number">
+                            </div>
+
+                            <div class="control-group l-only" style="display: none;">
+                                <label for="input-chaise-width">
+                                    <span>Uzanma Köşesi Genişliği</span>
+                                    <span class="value-display"><span id="val-chaise-width">90</span> cm</span>
+                                </label>
+                                <input type="range" id="input-chaise-width" min="70" max="130" step="5" value="90">
+                                <input type="number" id="num-chaise-width" min="70" max="130" value="90" class="input-number">
+                            </div>
+
+                            <div class="control-group">
+                                <label for="input-sofa-height">
+                                    <span>Sırt Yüksekliği</span>
+                                    <span class="value-display"><span id="val-sofa-height">80</span> cm</span>
+                                </label>
+                                <input type="range" id="input-sofa-height" min="60" max="110" step="2" value="80">
+                                <input type="number" id="num-sofa-height" min="60" max="110" value="80" class="input-number">
+                            </div>
+
+                            <div class="control-group">
+                                <label for="input-seat-height">
+                                    <span>Oturum Yüksekliği</span>
+                                    <span class="value-display"><span id="val-seat-height">42</span> cm</span>
+                                </label>
+                                <input type="range" id="input-seat-height" min="30" max="55" step="1" value="42">
+                                <input type="number" id="num-seat-height" min="30" max="55" value="42" class="input-number">
+                            </div>
+
+                            <div class="control-group">
+                                <label for="input-armrest-width">
+                                    <span>Kolçak Genişliği</span>
+                                    <span class="value-display"><span id="val-armrest-width">20</span> cm</span>
+                                </label>
+                                <input type="range" id="input-armrest-width" min="5" max="40" step="1" value="20">
+                                <input type="number" id="num-armrest-width" min="5" max="40" value="20" class="input-number">
+                            </div>
+                        </section>
+
+                        <section class="section l-only u-only" style="display: none;">
+                            <h2>Köşe Yönü / Yerleşimi</h2>
+                            <div class="corner-direction-selector">
+                                <label class="dir-option">
+                                    <input type="radio" name="chaise-dir" value="left" checked>
+                                    <span class="dir-btn">Sol Köşe</span>
+                                </label>
+                                <label class="dir-option">
+                                    <input type="radio" name="chaise-dir" value="right">
+                                    <span class="dir-btn">Sağ Köşe</span>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="section straight-only">
+                            <h2>Minder Yapısı</h2>
+                            <div class="control-group">
+                                <label for="input-cushion-count">Minder Adedi: <span id="val-cushion-count">3</span></label>
+                                <input type="range" id="input-cushion-count" min="1" max="5" step="1" value="3">
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- TAB 3: MATERIAL & DETAILS -->
+                    <div id="tab-material" class="tab-panel">
+                        <section class="section">
+                            <h2>Kumaş Türü & Rengi</h2>
+                            <p class="section-desc">Koltuk yüzey kaplaması için kumaş rengi seçin.</p>
+                            <div class="color-palette">
+                                <button class="color-swatch active" style="background-color: #f1ebd9;" data-color="#f1ebd9" data-name="Krem Kadife" title="Krem Kadife"></button>
+                                <button class="color-swatch" style="background-color: #d7ccc8;" data-color="#d7ccc8" data-name="Doğal Keten" title="Doğal Keten"></button>
+                                <button class="color-swatch" style="background-color: #1e3a5f;" data-color="#1e3a5f" data-name="Gece Mavisi" title="Gece Mavisi"></button>
+                                <button class="color-swatch" style="background-color: #14532d;" data-color="#14532d" data-name="Zümrüt Yeşili" title="Zümrüt Yeşili"></button>
+                                <button class="color-swatch" style="background-color: #9a3412;" data-color="#9a3412" data-name="Terracotta Kiremit" title="Terracotta Kiremit"></button>
+                                <button class="color-swatch" style="background-color: #374151;" data-color="#374151" data-name="Antrasit" title="Antrasit"></button>
+                                <button class="color-swatch" style="background-color: #ca8a04;" data-color="#ca8a04" data-name="Hardal Sarısı" title="Hardal Sarısı"></button>
+                                <button class="color-swatch" style="background-color: #a1887f;" data-color="#a1887f" data-name="Vizon Kadife" title="Vizon Kadife"></button>
+                            </div>
+                            <span id="selected-color-name" class="color-meta">Krem Kadife</span>
+                        </section>
+
+                        <section class="section">
+                            <h2>Ayak Özellikleri</h2>
+                            <div class="control-group">
+                                <label for="select-leg-type">Ayak Tasarımı</label>
+                                <select id="select-leg-type" class="select-modern">
+                                    <option value="wood" selected>Doğal Ahşap Ayak</option>
+                                    <option value="brass">Pirinç Altın Metal Ayak</option>
+                                    <option value="black">Siyah Mat Metal Ayak</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label for="input-leg-height">
+                                    <span>Ayak Yüksekliği</span>
+                                    <span class="value-display"><span id="val-leg-height">15</span> cm</span>
+                                </label>
+                                <input type="range" id="input-leg-height" min="5" max="25" step="1" value="15">
+                                <input type="number" id="num-leg-height" min="5" max="25" value="15" class="input-number">
+                            </div>
+                        </section>
+
+                        <section class="section">
+                            <h2>Tasarım Dosyası Yönetimi</h2>
+                            <div class="file-actions">
+                                <button id="btn-save" class="btn btn-secondary btn-full">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 12V4m0 0L9 7m3-3l3 3"/></svg>
+                                    Yerel Tarayıcıya Kaydet
+                                </button>
+                                <div class="file-action-row">
+                                    <button id="btn-export" class="btn btn-secondary">JSON İhracat</button>
+                                    <button id="btn-import-trigger" class="btn btn-secondary">JSON İthalat</button>
+                                </div>
+                                <input type="file" id="file-import" style="display: none;" accept=".json">
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Interactive Area -->
+            <main class="main-viewer">
+                <!-- Viewer Mode Toggles -->
+                <div class="viewer-tabs no-print">
+                    <button class="view-tab-btn active" data-view="3d">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+                        3D Görselleştirme (Etkileşimli)
+                    </button>
+                    <button class="view-tab-btn" data-view="2d">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                        2D Oda Yerleşim Planı
+                    </button>
+                </div>
+
+                <!-- Canvas Containers -->
+                <div class="viewer-canvas-wrapper">
+                    <!-- 3D Viewer Container -->
+                    <div id="three-container" class="viewer-panel active">
+                        <div class="three-controls">
+                            <span class="control-tip">Farenin sol tuşu ile döndürün, sağ tuşu ile taşıyın, tekerleğiyle yakınlaşın.</span>
+                            <button id="btn-screenshot" class="btn-icon" title="Fotoğrafını İndir">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="4"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2D Canvas Container -->
+                    <div id="canvas-container" class="viewer-panel">
+                        <div class="canvas-instructions">
+                            <span class="control-tip">Koltuğu odada yerleştirmek için sürükleyin. Çift tıklayarak veya yön butonundan 90° döndürebilirsiniz.</span>
+                            <div class="canvas-actions">
+                                <button id="btn-rotate-2d" class="btn btn-secondary btn-sm">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.27 9H18.25"/></svg>
+                                    90° Döndür
+                                </button>
+                                <button id="btn-reset-pos" class="btn btn-secondary btn-sm">Köşeye Hizala</button>
+                            </div>
+                        </div>
+                        <div class="canvas-scroll-container">
+                            <canvas id="canvas-2d" width="800" height="600"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- PRINT / PDF QUOTATION TEMPLATE (Only visible on print or preview modal) -->
+        <div id="print-template" class="print-only">
+            <div class="print-header">
+                <img src="/ergobed-koltuk-tasarim/assets/logo-D0Mz8cF8.png" alt="Ergobed Logo" class="print-logo">
+                <div class="company-info">
+                    <h2>KOLTUK TASARIM VE TEKNİK TEKLİF FORMU</h2>
+                    <p>Oda Yerleşim ve Parametrik Koltuk Çizim Çıktısı</p>
+                </div>
+                <div class="date-info">
+                    <p><strong>Tarih:</strong> <span id="print-date">15.07.2026</span></p>
+                    <p><strong>Teklif No:</strong> <span id="print-quote-id">KT-2026-1049</span></p>
+                </div>
+            </div>
+
+            <div class="print-meta-grid">
+                <div class="meta-box">
+                    <h3>Müşteri Bilgileri</h3>
+                    <p><strong>Adı Soyadı:</strong> <span id="print-cust-name">-</span></p>
+                    <p><strong>Telefon:</strong> <span id="print-cust-phone">-</span></p>
+                    <p><strong>Notlar:</strong> <span id="print-cust-notes">-</span></p>
+                </div>
+                <div class="meta-box">
+                    <h3>Oda Ölçüleri</h3>
+                    <p><strong>Duvar A (Genişlik):</strong> <span id="print-wall-a">-</span> cm</p>
+                    <p><strong>Duvar B (Derinlik):</strong> <span id="print-wall-b">-</span> cm</p>
+                </div>
+            </div>
+
+            <div class="print-sofa-specs">
+                <h3>Koltuk Özellikleri & Ölçü Raporu</h3>
+                <table class="specs-table">
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Değer / Ölçü</th>
+                            <th>Özellik</th>
+                            <th>Değer / Ölçü</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Koltuk Modeli</strong></td>
+                            <td id="print-spec-type">-</td>
+                            <td><strong>Sırt Yüksekliği</strong></td>
+                            <td><span id="print-spec-height">-</span> cm</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Toplam Genişlik</strong></td>
+                            <td><span id="print-spec-width">-</span> cm</td>
+                            <td><strong>Oturum Yüksekliği</strong></td>
+                            <td><span id="print-spec-seat-height">-</span> cm</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Koltuk Derinliği</strong></td>
+                            <td><span id="print-spec-depth">-</span> cm</td>
+                            <td><strong>Kolçak Genişliği</strong></td>
+                            <td><span id="print-spec-armrest">-</span> cm</td>
+                        </tr>
+                        <tr class="print-chaise-row" style="display: none;">
+                            <td><strong>Uzanma Uzunluğu</strong></td>
+                            <td><span id="print-spec-chaise-depth">-</span> cm</td>
+                            <td><strong>Uzanma Genişliği</strong></td>
+                            <td><span id="print-spec-chaise-width">-</span> cm</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kumaş / Renk</strong></td>
+                            <td id="print-spec-fabric">-</td>
+                            <td><strong>Ayak Türü / Yükseklik</strong></td>
+                            <td><span id="print-spec-leg-type">-</span> / <span id="print-spec-leg-height">-</span> cm</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="print-images-container">
+                <div class="print-img-box">
+                    <h3>3D Tasarım Görseli</h3>
+                    <img id="print-img-3d" alt="3D Koltuk Tasarımı" class="print-image">
+                </div>
+                <div class="print-img-box">
+                    <h3>2D Oda Yerleşim Planı (Ölçekli)</h3>
+                    <img id="print-img-2d" alt="2D Yerleşim Planı" class="print-image">
+                </div>
+            </div>
+
+            <div class="print-footer">
+                <div class="footer-sign">
+                    <p>Tasarımcı / Yetkili</p>
+                    <div class="sign-line"></div>
+                </div>
+                <div class="footer-sign">
+                    <p>Müşteri Onayı</p>
+                    <div class="sign-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION BANNER (Toast) -->
+        <div id="toast" class="toast">Mesaj</div>
+    </div>
+
+    <!-- Scripts -->
+</body>
+</html>
